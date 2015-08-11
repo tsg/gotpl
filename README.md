@@ -1,4 +1,4 @@
-# A simple CLI for the Golang text/template
+# gotpl - CLI tool for Golang templates
 
 Command line tool that compiles Golang
 [templates](http://golang.org/pkg/text/template/) with values from YAML files.
@@ -17,9 +17,9 @@ Say you have a `template` file like this:
 
 and a `user.yml` YAML file like this one:
 
-   first_name: Max
-   last_name: Mustermann
-   age: 30
+    first_name: Max
+    last_name: Mustermann
+    age: 30
 
 You can compile the template like this:
 
