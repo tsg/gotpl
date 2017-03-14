@@ -24,3 +24,7 @@ and a `user.yml` YAML file like this one:
 You can compile the template like this:
 
     gotpl template < user.yml
+
+Optionally, values can be passed in via flags:
+
+    echo "" | gotpl -e "firstname: Max" -e "last_name: Mustermann" -e "age: 30" template

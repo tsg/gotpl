@@ -45,8 +45,12 @@ func TestYamlTemplate(t *testing.T) {
 		tpl_file.Close()
 
 		output := bytes.NewBuffer(nil)
-		err = ExecuteTemplates(strings.NewReader(test.Input), output,
-			tpl_file.Name())
+		err = ExecuteTemplates(
+			[]string{},
+			strings.NewReader(test.Input),
+			output,
+			tpl_file.Name(),
+		)
 		assert.Nil(t, err)
 
 		assert.Equal(t, test.Output, output.String())
