@@ -10,11 +10,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestYamlTemplate(t *testing.T) {
+func TestTemplate(t *testing.T) {
 	type io struct {
 		Input    string
 		Template string
 		Output   string
+		Format   string
 	}
 
 	tests := []io{
@@ -22,16 +23,37 @@ func TestYamlTemplate(t *testing.T) {
 			Input:    "test: value",
 			Template: "{{.test}}",
 			Output:   "value",
+			Format:   "yaml",
 		},
 		io{
 			Input:    "name: Max\nage: 15",
 			Template: "Hello {{.name}}, of {{.age}} years old",
 			Output:   "Hello Max, of 15 years old",
+			Format:   "yaml",
 		},
 		io{
 			Input:    "legumes:\n  - potato\n  - onion\n  - cabbage",
 			Template: "Legumes:{{ range $index, $el := .legumes}}{{if $index}},{{end}} {{$el}}{{end}}",
 			Output:   "Legumes: potato, onion, cabbage",
+			Format:   "yaml",
+		},
+		io{
+			Input:    "{\"test\": \"value\"}",
+			Template: "{{.test}}",
+			Output:   "value",
+			Format:   "json",
+		},
+		io{
+			Input:    "{\"name\": \"Max\", \"age\": 15}",
+			Template: "Hello {{.name}}, of {{.age}} years old",
+			Output:   "Hello Max, of 15 years old",
+			Format:   "json",
+		},
+		io{
+			Input:    "{\"legumes\": [\"potato\", \"onion\", \"cabbage\"]}",
+			Template: "Legumes:{{ range $index, $el := .legumes}}{{if $index}},{{end}} {{$el}}{{end}}",
+			Output:   "Legumes: potato, onion, cabbage",
+			Format:   "json",
 		},
 	}
 
@@ -45,7 +67,9 @@ func TestYamlTemplate(t *testing.T) {
 		tpl_file.Close()
 
 		output := bytes.NewBuffer(nil)
-		err = ExecuteTemplates(strings.NewReader(test.Input), output,
+		values, err := ParseValues(strings.NewReader(test.Input), test.Format)
+		assert.Nil(t, err)
+		err = ExecuteTemplates(values, output,
 			tpl_file.Name())
 		assert.Nil(t, err)
 
