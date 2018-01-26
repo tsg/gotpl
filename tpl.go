@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"strings"
 	"os"
 	"text/template"
 
@@ -32,11 +33,29 @@ func ExecuteTemplates(values_in io.Reader, out io.Writer, tpl_files ...string) e
 		return fmt.Errorf("Failed to parse standard input: %v", err)
 	}
 
+	values["Env"] = getEnvironment(os.Environ())
+
 	err = tpl.Execute(out, values)
 	if err != nil {
 		return fmt.Errorf("Failed to parse standard input: %v", err)
 	}
 	return nil
+}
+
+func getEnvironment(data []string) map[string]string {
+	items := make(map[string]string)
+	for _, item := range data {
+		key, val := getKeyVal(item)
+		items[key] = val
+	}
+	return items
+}
+
+func getKeyVal(item string) (key, val string) {
+	splits := strings.Split(item, "=")
+	key = splits[0]
+	val = splits[1]
+	return
 }
 
 func main() {
