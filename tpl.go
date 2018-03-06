@@ -15,27 +15,30 @@ import (
 // for the tpl_files templates and writes the executed templates to
 // the out stream.
 func ExecuteTemplates(values_in io.Reader, out io.Writer, tpl_files ...string) error {
-	tpl, err := template.ParseFiles(tpl_files...)
-	if err != nil {
-		return fmt.Errorf("Error parsing template(s): %v", err)
-	}
-
 	buf := bytes.NewBuffer(nil)
-	_, err = io.Copy(buf, values_in)
+	_, err := io.Copy(buf, values_in)
 	if err != nil {
 		return fmt.Errorf("Failed to read standard input: %v", err)
 	}
 
-	var values map[string]interface{}
-	err = yaml.Unmarshal(buf.Bytes(), &values)
-	if err != nil {
-		return fmt.Errorf("Failed to parse standard input: %v", err)
+	for _, tpl_file := range tpl_files {
+		tpl, err := template.ParseFiles(tpl_file)
+		if err != nil {
+			return fmt.Errorf("Error parsing template(s): %v", err)
+		}
+
+		var values map[string]interface{}
+		err = yaml.Unmarshal(buf.Bytes(), &values)
+		if err != nil {
+			return fmt.Errorf("Failed to parse standard input: %v", err)
+		}
+
+		err = tpl.Execute(out, values)
+		if err != nil {
+			return fmt.Errorf("Failed to parse standard input: %v", err)
+		}
 	}
 
-	err = tpl.Execute(out, values)
-	if err != nil {
-		return fmt.Errorf("Failed to parse standard input: %v", err)
-	}
 	return nil
 }
 
