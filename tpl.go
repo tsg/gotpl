@@ -9,6 +9,7 @@ import (
 	"text/template"
 
 	"gopkg.in/yaml.v2"
+	"encoding/base64"
 )
 
 // Reads a YAML document from the values_in stream, uses it as values
@@ -33,10 +34,25 @@ func ExecuteTemplates(values_in io.Reader, out io.Writer, tpl_files ...string) e
 			return fmt.Errorf("Failed to parse standard input: %v", err)
 		}
 
+		err = convert2base64(&values)
+		if err != nil {
+			return fmt.Errorf("Failed to parse standard input: %v", err)
+		}
+
 		err = tpl.Execute(out, values)
 		if err != nil {
 			return fmt.Errorf("Failed to parse standard input: %v", err)
 		}
+	}
+
+	return nil
+}
+
+// convert map to base64
+func convert2base64(values *map[string]interface{}) (error) {
+	for k, v := range (*values)["base64"].(map[interface{}]interface{}) {
+		(*values)["base64"].(map[interface{}]interface{})[k] =
+			base64.StdEncoding.EncodeToString([]byte(v.(string)))
 	}
 
 	return nil
