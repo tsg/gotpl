@@ -50,9 +50,12 @@ func ExecuteTemplates(values_in io.Reader, out io.Writer, tpl_files ...string) e
 
 // convert map to base64
 func convert2base64(values *map[string]interface{}) (error) {
-	for k, v := range (*values)["base64"].(map[interface{}]interface{}) {
-		(*values)["base64"].(map[interface{}]interface{})[k] =
-			base64.StdEncoding.EncodeToString([]byte(v.(string)))
+
+	if _, ok := (*values)["base64"]; ok {
+		for k, v := range (*values)["base64"].(map[interface{}]interface{}) {
+			(*values)["base64"].(map[interface{}]interface{})[k] =
+				base64.StdEncoding.EncodeToString([]byte(v.(string)))
+		}
 	}
 
 	return nil

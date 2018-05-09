@@ -33,6 +33,11 @@ func TestYamlTemplate(t *testing.T) {
 			Template: "Legumes:{{ range $index, $el := .legumes}}{{if $index}},{{end}} {{$el}}{{end}}",
 			Output:   "Legumes: potato, onion, cabbage",
 		},
+		io{
+			Input:    "base64:\n foo: bar",
+			Template: "{{ .base64.foo }}",
+			Output:   "YmFy",
+		},
 	}
 
 	for _, test := range tests {
