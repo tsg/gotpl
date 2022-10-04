@@ -3,12 +3,15 @@
 Command line tool that compiles Golang
 [templates](http://golang.org/pkg/text/template/) with values from YAML files.
 
-Inspired by Python/Jinja2's [j2cli](https://github.com/kolypto/j2cli).
+## Install global CLI
 
-## Install
+```shell
+go install github.com/huantt/gotpl@latest
+```
 
-    go get github.com/tsg/gotpl
-
+```shell
+export PATH=$PATH:$(go env GOPATH)/bin
+```
 ## Usage
 
 Say you have a `template` file like this:
